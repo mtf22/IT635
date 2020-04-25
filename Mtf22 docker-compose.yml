@@ -1,0 +1,48 @@
+Last login: Sat Apr 25 12:18:24 on ttys000
+talha@Muhammads-MBP ~ % cd IT635
+talha@Muhammads-MBP IT635 % ls
+Exercise 1	Exercise 3	Exercise 6	Exercise A
+Exercise 2	Exercise 4	Exercise 8	mysql-db
+talha@Muhammads-MBP IT635 % cd Exercise 8
+cd: string not in pwd: Exercise
+talha@Muhammads-MBP IT635 % cd "Exercise 8"
+talha@Muhammads-MBP Exercise 8 % ls
+docker-compose.yml		docker-entrypoint-initdb.d
+talha@Muhammads-MBP Exercise 8 % vim docker-compose.yml
+
+
+
+
+
+
+
+
+
+
+
+
+
+version: '3.1'
+services:
+     db1:
+         image: mongo
+         command: --replSet "rs0"
+         volumes:
+             - "./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d"
+     db2:
+         image: mongo
+         command: --replSet "rs0"
+     db3:
+         image: mongo
+         command: --replSet "rs0"
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+"docker-compose.yml" 13L, 315C
