@@ -1,0 +1,491 @@
+Last login: Sat Apr 25 10:52:27 on ttys002
+talha@Muhammads-MBP ~ % cd IT635
+talha@Muhammads-MBP IT635 % cd "Exercise 8"
+talha@Muhammads-MBP Exercise 8 % ls
+docker-compose.yml
+talha@Muhammads-MBP Exercise 8 % docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
+975e410914e9        mongo               "docker-entrypoint.s…"   12 minutes ago      Up 12 minutes       27017/tcp           exercise8_db1_1
+dd94b6ddbc12        mongo               "docker-entrypoint.s…"   12 minutes ago      Up 12 minutes       27017/tcp           exercise8_db2_1
+b35e7d966750        mongo               "docker-entrypoint.s…"   12 minutes ago      Up 12 minutes       27017/tcp           exercise8_db3_1
+talha@Muhammads-MBP Exercise 8 % docker-compose exec db1 bash
+root@975e410914e9:/# ls
+bin   dev                         home        lib64  opt   run   sys  var
+boot  docker-entrypoint-initdb.d  js-yaml.js  media  proc  sbin  tmp
+data  etc                         lib         mnt    root  srv   usr
+root@975e410914e9:/# ps ax
+  PID TTY      STAT   TIME COMMAND
+    1 ?        Ssl    0:08 mongod --replSet rs0 --bind_ip_all
+   54 pts/0    Ss     0:00 bash
+   66 pts/0    SLl+   0:00 mongo
+   71 pts/1    Ss     0:00 bash
+   81 pts/1    R+     0:00 ps ax
+root@975e410914e9:/# mongo
+MongoDB shell version v4.2.6
+connecting to: mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb
+Implicit session: session { "id" : UUID("0ce12ed4-c9d5-4cbf-b0d5-126fd8c31b50") }
+MongoDB server version: 4.2.6
+Server has startup warnings: 
+2020-04-25T14:51:07.372+0000 I  STORAGE  [initandlisten] 
+2020-04-25T14:51:07.372+0000 I  STORAGE  [initandlisten] ** WARNING: Using the XFS filesystem is strongly recommended with the WiredTiger storage engine
+2020-04-25T14:51:07.372+0000 I  STORAGE  [initandlisten] **          See http://dochub.mongodb.org/core/prodnotes-filesystem
+2020-04-25T14:51:08.093+0000 I  CONTROL  [initandlisten] 
+2020-04-25T14:51:08.093+0000 I  CONTROL  [initandlisten] ** WARNING: Access control is not enabled for the database.
+2020-04-25T14:51:08.093+0000 I  CONTROL  [initandlisten] **          Read and write access to data and configuration is unrestricted.
+2020-04-25T14:51:08.093+0000 I  CONTROL  [initandlisten] 
+---
+Enable MongoDB's free cloud-based monitoring service, which will then receive and display
+metrics about your deployment (disk utilization, CPU, operation statistics, etc).
+
+The monitoring data will be available on a MongoDB website with a unique URL accessible to you
+and anyone you share the URL with. MongoDB may use this information to make product
+improvements and to suggest MongoDB products and deployment options to you.
+
+To enable free monitoring, run the following command: db.enableFreeMonitoring()
+To permanently disable this reminder, run the following command: db.disableFreeMonitoring()
+---
+
+> rs.initiate( {
+... _id : "rs0",
+... members: [
+... { _id: 0, host:"db1" },
+... { _id: 1, host: "db2" },
+... { _id: 2, host: "db3" } ] } )
+{
+	"ok" : 1,
+	"$clusterTime" : {
+		"clusterTime" : Timestamp(1587827349, 1),
+		"signature" : {
+			"hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+			"keyId" : NumberLong(0)
+		}
+	},
+	"operationTime" : Timestamp(1587827349, 1)
+}
+rs0:SECONDARY> rs.conf()
+{
+	"_id" : "rs0",
+	"version" : 1,
+	"protocolVersion" : NumberLong(1),
+	"writeConcernMajorityJournalDefault" : true,
+	"members" : [
+		{
+			"_id" : 0,
+			"host" : "db1:27017",
+			"arbiterOnly" : false,
+			"buildIndexes" : true,
+			"hidden" : false,
+			"priority" : 1,
+			"tags" : {
+				
+			},
+			"slaveDelay" : NumberLong(0),
+			"votes" : 1
+		},
+		{
+			"_id" : 1,
+			"host" : "db2:27017",
+			"arbiterOnly" : false,
+			"buildIndexes" : true,
+			"hidden" : false,
+			"priority" : 1,
+			"tags" : {
+				
+			},
+			"slaveDelay" : NumberLong(0),
+			"votes" : 1
+		},
+		{
+			"_id" : 2,
+			"host" : "db3:27017",
+			"arbiterOnly" : false,
+			"buildIndexes" : true,
+			"hidden" : false,
+			"priority" : 1,
+			"tags" : {
+				
+			},
+			"slaveDelay" : NumberLong(0),
+			"votes" : 1
+		}
+	],
+	"settings" : {
+		"chainingAllowed" : true,
+		"heartbeatIntervalMillis" : 2000,
+		"heartbeatTimeoutSecs" : 10,
+		"electionTimeoutMillis" : 10000,
+		"catchUpTimeoutMillis" : -1,
+		"catchUpTakeoverDelayMillis" : 30000,
+		"getLastErrorModes" : {
+			
+		},
+		"getLastErrorDefaults" : {
+			"w" : 1,
+			"wtimeout" : 0
+		},
+		"replicaSetId" : ObjectId("5ea45295b579b33f0a19e479")
+	}
+}
+rs0:PRIMARY> rs.status()
+{
+	"set" : "rs0",
+	"date" : ISODate("2020-04-25T15:10:43.973Z"),
+	"myState" : 1,
+	"term" : NumberLong(1),
+	"syncingTo" : "",
+	"syncSourceHost" : "",
+	"syncSourceId" : -1,
+	"heartbeatIntervalMillis" : NumberLong(2000),
+	"majorityVoteCount" : 2,
+	"writeMajorityCount" : 2,
+	"optimes" : {
+		"lastCommittedOpTime" : {
+			"ts" : Timestamp(1587827439, 1),
+			"t" : NumberLong(1)
+		},
+		"lastCommittedWallTime" : ISODate("2020-04-25T15:10:39.902Z"),
+		"readConcernMajorityOpTime" : {
+			"ts" : Timestamp(1587827439, 1),
+			"t" : NumberLong(1)
+		},
+		"readConcernMajorityWallTime" : ISODate("2020-04-25T15:10:39.902Z"),
+		"appliedOpTime" : {
+			"ts" : Timestamp(1587827439, 1),
+			"t" : NumberLong(1)
+		},
+		"durableOpTime" : {
+			"ts" : Timestamp(1587827439, 1),
+			"t" : NumberLong(1)
+		},
+		"lastAppliedWallTime" : ISODate("2020-04-25T15:10:39.902Z"),
+		"lastDurableWallTime" : ISODate("2020-04-25T15:10:39.902Z")
+	},
+	"lastStableRecoveryTimestamp" : Timestamp(1587827419, 1),
+	"lastStableCheckpointTimestamp" : Timestamp(1587827419, 1),
+	"electionCandidateMetrics" : {
+		"lastElectionReason" : "electionTimeout",
+		"lastElectionDate" : ISODate("2020-04-25T15:09:19.858Z"),
+		"electionTerm" : NumberLong(1),
+		"lastCommittedOpTimeAtElection" : {
+			"ts" : Timestamp(0, 0),
+			"t" : NumberLong(-1)
+		},
+		"lastSeenOpTimeAtElection" : {
+			"ts" : Timestamp(1587827349, 1),
+			"t" : NumberLong(-1)
+		},
+		"numVotesNeeded" : 2,
+		"priorityAtElection" : 1,
+		"electionTimeoutMillis" : NumberLong(10000),
+		"numCatchUpOps" : NumberLong(0),
+		"newTermStartDate" : ISODate("2020-04-25T15:09:19.884Z"),
+		"wMajorityWriteAvailabilityDate" : ISODate("2020-04-25T15:09:21.226Z")
+	},
+	"members" : [
+		{
+			"_id" : 0,
+			"name" : "db1:27017",
+			"health" : 1,
+			"state" : 1,
+			"stateStr" : "PRIMARY",
+			"uptime" : 1176,
+			"optime" : {
+				"ts" : Timestamp(1587827439, 1),
+				"t" : NumberLong(1)
+			},
+			"optimeDate" : ISODate("2020-04-25T15:10:39Z"),
+			"syncingTo" : "",
+			"syncSourceHost" : "",
+			"syncSourceId" : -1,
+			"infoMessage" : "could not find member to sync from",
+			"electionTime" : Timestamp(1587827359, 1),
+			"electionDate" : ISODate("2020-04-25T15:09:19Z"),
+			"configVersion" : 1,
+			"self" : true,
+			"lastHeartbeatMessage" : ""
+		},
+		{
+			"_id" : 1,
+			"name" : "db2:27017",
+			"health" : 1,
+			"state" : 2,
+			"stateStr" : "SECONDARY",
+			"uptime" : 94,
+			"optime" : {
+				"ts" : Timestamp(1587827439, 1),
+				"t" : NumberLong(1)
+			},
+			"optimeDurable" : {
+				"ts" : Timestamp(1587827439, 1),
+				"t" : NumberLong(1)
+			},
+			"optimeDate" : ISODate("2020-04-25T15:10:39Z"),
+			"optimeDurableDate" : ISODate("2020-04-25T15:10:39Z"),
+			"lastHeartbeat" : ISODate("2020-04-25T15:10:43.971Z"),
+			"lastHeartbeatRecv" : ISODate("2020-04-25T15:10:43.371Z"),
+			"pingMs" : NumberLong(0),
+			"lastHeartbeatMessage" : "",
+			"syncingTo" : "db1:27017",
+			"syncSourceHost" : "db1:27017",
+			"syncSourceId" : 0,
+			"infoMessage" : "",
+			"configVersion" : 1
+		},
+		{
+			"_id" : 2,
+			"name" : "db3:27017",
+			"health" : 1,
+			"state" : 2,
+			"stateStr" : "SECONDARY",
+			"uptime" : 94,
+			"optime" : {
+				"ts" : Timestamp(1587827439, 1),
+				"t" : NumberLong(1)
+			},
+			"optimeDurable" : {
+				"ts" : Timestamp(1587827439, 1),
+				"t" : NumberLong(1)
+			},
+			"optimeDate" : ISODate("2020-04-25T15:10:39Z"),
+			"optimeDurableDate" : ISODate("2020-04-25T15:10:39Z"),
+			"lastHeartbeat" : ISODate("2020-04-25T15:10:43.972Z"),
+			"lastHeartbeatRecv" : ISODate("2020-04-25T15:10:43.371Z"),
+			"pingMs" : NumberLong(0),
+			"lastHeartbeatMessage" : "",
+			"syncingTo" : "db1:27017",
+			"syncSourceHost" : "db1:27017",
+			"syncSourceId" : 0,
+			"infoMessage" : "",
+			"configVersion" : 1
+		}
+	],
+	"ok" : 1,
+	"$clusterTime" : {
+		"clusterTime" : Timestamp(1587827439, 1),
+		"signature" : {
+			"hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+			"keyId" : NumberLong(0)
+		}
+	},
+	"operationTime" : Timestamp(1587827439, 1)
+}
+rs0:PRIMARY> exit
+bye
+root@975e410914e9:/# exit
+exit
+talha@Muhammads-MBP Exercise 8 % ls
+docker-compose.yml
+talha@Muhammads-MBP Exercise 8 % mkdir "docker-entrypoint-initdb.d"
+talha@Muhammads-MBP Exercise 8 % ls
+docker-compose.yml		docker-entrypoint-initdb.d
+talha@Muhammads-MBP Exercise 8 % cd "docker-entrypoint-initdb.d"
+talha@Muhammads-MBP docker-entrypoint-initdb.d % vim init.js
+talha@Muhammads-MBP docker-entrypoint-initdb.d % cd ..
+talha@Muhammads-MBP Exercise 8 % vim docker-compose.yml
+talha@Muhammads-MBP Exercise 8 % vim docker-compose.yml
+talha@Muhammads-MBP Exercise 8 % vim docker-compose.yml
+talha@Muhammads-MBP Exercise 8 % docker-compose exec db1 bash 
+root@22ff8265e521:/# mongo 
+MongoDB shell version v4.2.6
+connecting to: mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb
+Implicit session: session { "id" : UUID("0b8d5c07-7a2a-4cd1-9f80-ad5392e9b401") }
+MongoDB server version: 4.2.6
+Welcome to the MongoDB shell.
+For interactive help, type "help".
+For more comprehensive documentation, see
+	http://docs.mongodb.org/
+Questions? Try the support group
+	http://groups.google.com/group/mongodb-user
+Server has startup warnings: 
+2020-04-25T15:47:57.495+0000 I  STORAGE  [initandlisten] 
+2020-04-25T15:47:57.495+0000 I  STORAGE  [initandlisten] ** WARNING: Using the XFS filesystem is strongly recommended with the WiredTiger storage engine
+2020-04-25T15:47:57.496+0000 I  STORAGE  [initandlisten] **          See http://dochub.mongodb.org/core/prodnotes-filesystem
+2020-04-25T15:47:58.765+0000 I  CONTROL  [initandlisten] 
+2020-04-25T15:47:58.765+0000 I  CONTROL  [initandlisten] ** WARNING: Access control is not enabled for the database.
+2020-04-25T15:47:58.765+0000 I  CONTROL  [initandlisten] **          Read and write access to data and configuration is unrestricted.
+2020-04-25T15:47:58.765+0000 I  CONTROL  [initandlisten] 
+---
+Enable MongoDB's free cloud-based monitoring service, which will then receive and display
+metrics about your deployment (disk utilization, CPU, operation statistics, etc).
+
+The monitoring data will be available on a MongoDB website with a unique URL accessible to you
+and anyone you share the URL with. MongoDB may use this information to make product
+improvements and to suggest MongoDB products and deployment options to you.
+
+To enable free monitoring, run the following command: db.enableFreeMonitoring()
+To permanently disable this reminder, run the following command: db.disableFreeMonitoring()
+---
+
+rs0:SECONDARY> rs.status()
+{
+	"set" : "rs0",
+	"date" : ISODate("2020-04-25T15:51:54.927Z"),
+	"myState" : 2,
+	"term" : NumberLong(3),
+	"syncingTo" : "db3:27017",
+	"syncSourceHost" : "db3:27017",
+	"syncSourceId" : 2,
+	"heartbeatIntervalMillis" : NumberLong(2000),
+	"majorityVoteCount" : 2,
+	"writeMajorityCount" : 2,
+	"optimes" : {
+		"lastCommittedOpTime" : {
+			"ts" : Timestamp(1587829908, 1),
+			"t" : NumberLong(3)
+		},
+		"lastCommittedWallTime" : ISODate("2020-04-25T15:51:48.797Z"),
+		"readConcernMajorityOpTime" : {
+			"ts" : Timestamp(1587829908, 1),
+			"t" : NumberLong(3)
+		},
+		"readConcernMajorityWallTime" : ISODate("2020-04-25T15:51:48.797Z"),
+		"appliedOpTime" : {
+			"ts" : Timestamp(1587829908, 1),
+			"t" : NumberLong(3)
+		},
+		"durableOpTime" : {
+			"ts" : Timestamp(1587829908, 1),
+			"t" : NumberLong(3)
+		},
+		"lastAppliedWallTime" : ISODate("2020-04-25T15:51:48.797Z"),
+		"lastDurableWallTime" : ISODate("2020-04-25T15:51:48.797Z")
+	},
+	"lastStableRecoveryTimestamp" : Timestamp(1587829858, 1),
+	"lastStableCheckpointTimestamp" : Timestamp(1587829858, 1),
+	"electionParticipantMetrics" : {
+		"votedForCandidate" : true,
+		"electionTerm" : NumberLong(3),
+		"lastVoteDate" : ISODate("2020-04-25T15:48:08.758Z"),
+		"electionCandidateMemberId" : 2,
+		"voteReason" : "",
+		"lastAppliedOpTimeAtElection" : {
+			"ts" : Timestamp(1587828993, 2),
+			"t" : NumberLong(2)
+		},
+		"maxAppliedOpTimeInSet" : {
+			"ts" : Timestamp(1587828993, 2),
+			"t" : NumberLong(2)
+		},
+		"priorityAtElection" : 1,
+		"newTermStartDate" : ISODate("2020-04-25T15:48:08.766Z"),
+		"newTermAppliedDate" : ISODate("2020-04-25T15:48:09.809Z")
+	},
+	"members" : [
+		{
+			"_id" : 0,
+			"name" : "db1:27017",
+			"health" : 1,
+			"state" : 2,
+			"stateStr" : "SECONDARY",
+			"uptime" : 237,
+			"optime" : {
+				"ts" : Timestamp(1587829908, 1),
+				"t" : NumberLong(3)
+			},
+			"optimeDate" : ISODate("2020-04-25T15:51:48Z"),
+			"syncingTo" : "db3:27017",
+			"syncSourceHost" : "db3:27017",
+			"syncSourceId" : 2,
+			"infoMessage" : "",
+			"configVersion" : 1,
+			"self" : true,
+			"lastHeartbeatMessage" : ""
+		},
+		{
+			"_id" : 1,
+			"name" : "db2:27017",
+			"health" : 1,
+			"state" : 2,
+			"stateStr" : "SECONDARY",
+			"uptime" : 236,
+			"optime" : {
+				"ts" : Timestamp(1587829908, 1),
+				"t" : NumberLong(3)
+			},
+			"optimeDurable" : {
+				"ts" : Timestamp(1587829908, 1),
+				"t" : NumberLong(3)
+			},
+			"optimeDate" : ISODate("2020-04-25T15:51:48Z"),
+			"optimeDurableDate" : ISODate("2020-04-25T15:51:48Z"),
+			"lastHeartbeat" : ISODate("2020-04-25T15:51:54.121Z"),
+			"lastHeartbeatRecv" : ISODate("2020-04-25T15:51:53.947Z"),
+			"pingMs" : NumberLong(0),
+			"lastHeartbeatMessage" : "",
+			"syncingTo" : "db3:27017",
+			"syncSourceHost" : "db3:27017",
+			"syncSourceId" : 2,
+			"infoMessage" : "",
+			"configVersion" : 1
+		},
+		{
+			"_id" : 2,
+			"name" : "db3:27017",
+			"health" : 1,
+			"state" : 1,
+			"stateStr" : "PRIMARY",
+			"uptime" : 236,
+			"optime" : {
+				"ts" : Timestamp(1587829908, 1),
+				"t" : NumberLong(3)
+			},
+			"optimeDurable" : {
+				"ts" : Timestamp(1587829908, 1),
+				"t" : NumberLong(3)
+			},
+			"optimeDate" : ISODate("2020-04-25T15:51:48Z"),
+			"optimeDurableDate" : ISODate("2020-04-25T15:51:48Z"),
+			"lastHeartbeat" : ISODate("2020-04-25T15:51:54.121Z"),
+			"lastHeartbeatRecv" : ISODate("2020-04-25T15:51:53.023Z"),
+			"pingMs" : NumberLong(0),
+			"lastHeartbeatMessage" : "",
+			"syncingTo" : "",
+			"syncSourceHost" : "",
+			"syncSourceId" : -1,
+			"infoMessage" : "",
+			"electionTime" : Timestamp(1587829688, 1),
+			"electionDate" : ISODate("2020-04-25T15:48:08Z"),
+			"configVersion" : 1
+		}
+	],
+	"ok" : 1,
+	"$clusterTime" : {
+		"clusterTime" : Timestamp(1587829908, 1),
+		"signature" : {
+			"hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+			"keyId" : NumberLong(0)
+		}
+	},
+	"operationTime" : Timestamp(1587829908, 1)
+}
+rs0:SECONDARY> exit
+bye
+root@22ff8265e521:/# exit
+exit
+talha@Muhammads-MBP Exercise 8 % vim docker-compose.yml       
+
+version: '3.1'
+services:
+     db1:
+         image: mongo
+         command: --replSet "rs0"
+         volumes:
+             - "./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d"
+     db2:
+         image: mongo
+         command: --replSet "rs0"
+     db3:
+         image: mongo
+         command: --replSet "rs0"
+~                                                                                                              
+~                                                                                                              
+~                                                                                                              
+~                                                                                                              
+~                                                                                                              
+~                                                                                                              
+~                                                                                                              
+~                                                                                                              
+~                                                                                                              
+~                                                                                                              
+~                                                                                                              
+"docker-compose.yml" 13L, 315C
